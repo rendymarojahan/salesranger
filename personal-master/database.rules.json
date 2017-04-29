@@ -1,0 +1,16 @@
+{
+  "rules": {
+    ".read": true,
+    ".write": true,
+    "overviews": {
+      ".indexOn": [
+        "kind"
+      ]
+    },
+    "blogs": {
+      ".indexOn": [
+        "topic"
+      ]
+    }
+  }
+}

@@ -1,0 +1,12 @@
+<ion-modal-view>
+    <button class="button button-close" ng-click="closeLogin()">
+        <i class="icon ion-close-circled"></i>
+    </button>
+  <ion-content style="background: url(img/login.jpg) center; background-size: cover;">
+    <div class="button-bar social-login">
+        <button class="button button-small button-border icon-left ion-social-google button-assertive-900" ng-init="passGo='Google'" ng-click="guest(passGo)">Google+</button>
+        <button class="button button-small button-border icon-left ion-social-twitter button-calm-900" ng-init="passTw='Twitter'" ng-click="guest(passTw)">Twitter</button>
+        <button class="button button-small button-border icon-left ion-social-facebook button-positive-900" ng-init="passFb='Facebook'" ng-click="guest(passFb)">Facebook</button>
+    </div>
+  </ion-content>
+</ion-modal-view>
