@@ -1,2 +1,0 @@
-# inspire
-E-Commerce
