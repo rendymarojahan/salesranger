@@ -103,12 +103,19 @@
                 <li><a menu-close href="#/app/overview">Data Tugas</a></li>
                 <li><a menu-close href="#/app/info">Data Agen</a></li>
               </ul>
-            </li><li ng-click="trigmast()" class="{{mast}}"><a><i class="fa fa-clone"></i>Aktivitas Penjualan<span class="fa fa-chevron-down"></span></a>
+            </li>
+            <li ng-click="trigmast()" class="{{mast}}"><a><i class="fa fa-clone"></i>Aktivitas Penjualan<span class="fa fa-chevron-down"></span></a>
               <ul class="nav child_menu" style={{mastshow}}>
                 <li><a menu-close href="#/app/addinfo">Pelanggan</a></li>
                 <li><a menu-close href="#/app/addtag">Agen</a></li>
               </ul>
             </li>
+            <ul class="nav side-menu">
+            <li ng-click="trighome()" class="{{home}}"><a><i class="fa fa-home"></i>Administrator<span class="fa fa-chevron-down"></span></a>
+              <ul class="nav child_menu" style={{homeshow}}>
+                <li><a menu-close href="#/app/registration">Mengelola Pengguna</a></li>
+                <li><a menu-close href="#/app/profile">Mengelola Attribut</a></li>
+              </ul>
           </ul>
         </div>
       </div>
