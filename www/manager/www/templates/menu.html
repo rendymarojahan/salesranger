@@ -67,7 +67,7 @@
   </ion-side-menu-content>
 
   <ion-side-menu side="left" width="230">
-    <a menu-close ng-click="login()" class="site_title"><i class="fa fa-paw"></i> <span>Web Manager</span></a>
+    <a menu-close ng-click="login()" class="site_title"><i class="fa fa-paw"></i> <span>Kepala Penjualan</span></a>
     <ion-content>
       <div class="profile">
         <div class="profile_pic">
@@ -91,26 +91,22 @@
                 <li><a menu-close href="#/app/profile">Profile</a></li>
               </ul>
             </li>
-            <li ng-click="trigcont()" class="{{cont}}"><a><i class="fa fa-clone"></i>Content <span class="fa fa-chevron-down"></span></a>
+            <li ng-click="trigcont()" class="{{cont}}"><a><i class="fa fa-clone"></i>Monitor Agen<span class="fa fa-chevron-down"></span></a>
               <ul class="nav child_menu" style={{contshow}}>
-                <li><a menu-close href="#/app/addblog/">Blog</a></li>
-                <li><a menu-close href="#/app/addoverview">Overview</a></li>
-                <li><a menu-close href="#/app/registration">User</a></li>
+                <li><a menu-close href="#/app/addblog/">Kontrol Harian</a></li>
+                <li><a menu-close href="#/app/addoverview">Kontrol Bulanan</a></li>
               </ul>
             </li>
-            <li ng-click="trigsett()" class="{{sett}}"><a><i class="fa fa-clone"></i>Setting <span class="fa fa-chevron-down"></span></a>
+            <li ng-click="trigsett()" class="{{sett}}"><a><i class="fa fa-clone"></i>Penugasan<span class="fa fa-chevron-down"></span></a>
               <ul class="nav child_menu" style={{settshow}}>
-                <li><a menu-close href="#/app/blog">Blog</a></li>
-                <li><a menu-close href="#/app/overview">Overview</a></li>
-                <li><a menu-close href="#/app/info">Info</a></li>
-                <li><a menu-close href="#/app/tag">Tag</a></li>
-                <li><a menu-close href="#/app/feature">Feature</a></li>
+                <li><a menu-close href="#/app/blog">Data Customer</a></li>
+                <li><a menu-close href="#/app/overview">Data Tugas</a></li>
+                <li><a menu-close href="#/app/info">Data Agen</a></li>
               </ul>
-            </li><li ng-click="trigmast()" class="{{mast}}"><a><i class="fa fa-clone"></i>Master <span class="fa fa-chevron-down"></span></a>
+            </li><li ng-click="trigmast()" class="{{mast}}"><a><i class="fa fa-clone"></i>Aktivitas Penjualan<span class="fa fa-chevron-down"></span></a>
               <ul class="nav child_menu" style={{mastshow}}>
-                <li><a menu-close href="#/app/addinfo">Info</a></li>
-                <li><a menu-close href="#/app/addtag">Tag</a></li>
-                <li><a menu-close href="#/app/addfeature">Feature</a></li>
+                <li><a menu-close href="#/app/addinfo">Pelanggan</a></li>
+                <li><a menu-close href="#/app/addtag">Agen</a></li>
               </ul>
             </li>
           </ul>
