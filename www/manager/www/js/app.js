@@ -245,9 +245,20 @@ angular.module('starter', ['ionic', 'starter.controllers', 'ionic-datepicker', '
 	'menuContent': {
 	  templateUrl: 'templates/dashboard.html',
 	  controller: 'dashboardCtrl'
-	}
-	}
-  });
+	    }
+	 }
+  })
+.state('app.addcustomer', {
+    url: '/addcustomer',
+    views: {
+      'menuContent': {
+        templateUrl: 'templates/addcustomer.html',
+        controller: 'registrationCtrl'
+      }
+    }
+  })
+
+  ;
   // if none of the above states are matched, use this as the fallback
   $urlRouterProvider.otherwise('/app');
 });
