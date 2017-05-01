@@ -274,35 +274,35 @@ angular.module('starter.controllers', [])
 
   // User Level
   $scope.admin = "";
-  $scope.finance = "";
-  $scope.sales = "";
-  $scope.customer = "";
+  $scope.agen = "";
+  $scope.headsales = "";
+  $scope.manager = "";
   $scope.trigadmin = function() {
     $scope.admin = "checked";
-    $scope.finance = "";
-    $scope.sales = "";
-    $scope.customer = "";
+    $scope.agen = "";
+    $scope.headsales = "";
+    $scope.manager = "";
     $scope.level = "admin";
   };
-  $scope.trigfinance = function() {
+  $scope.trigagen = function() {
     $scope.admin = "";
-    $scope.finance = "checked";
-    $scope.sales = "";
-    $scope.customer = "";
+    $scope.agen = "checked";
+    $scope.headsales = "";
+    $scope.manager = "";
     $scope.level = "finance";
   };
   $scope.trigsales = function() {
     $scope.admin = "";
-    $scope.finance = "";
-    $scope.sales = "checked";
-    $scope.customer = "";
+    $scope.agen = "";
+    $scope.headsales = "checked";
+    $scope.manager = "";
     $scope.level = "sales";
   };
   $scope.trigcustomer = function() {
     $scope.admin = "";
-    $scope.finance = "";
-    $scope.sales = "";
-    $scope.customer = "checked";
+    $scope.agen = "";
+    $scope.headsales = "";
+    $scope.manager = "checked";
     $scope.level = "customer";
   };
 
