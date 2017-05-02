@@ -349,17 +349,23 @@ angular.module('starter.controllers', [])
       // Validate form data
       if (typeof user.fullname === 'undefined' || user.fullname === '') {
           $scope.hideValidationMessage = false;
-          $scope.validationMessage = "Please enter your name"
+          $ionicPopup.alert({title: 'Registration failed', template: 'Please enter your name!'});
           return;
       }
       if (typeof user.email === 'undefined' || user.email === '') {
           $scope.hideValidationMessage = false;
-          $scope.validationMessage = "Please enter your email"
+          $ionicPopup.alert({title: 'Registration failed', template: 'Please input correct format email, example abc@abc.com!'});
           return;
       }
       if (typeof user.password === 'undefined' || user.password === '') {
           $scope.hideValidationMessage = false;
-          $scope.validationMessage = "Please enter your password"
+          $ionicPopup.alert({title: 'Registration failed', template: 'Please enter your password'});
+          return;
+      }
+
+      if (typeof user.filesSelected === 'undefined' || user.filesSelected === '') {
+          $scope.hideValidationMessage = false;
+          $ionicPopup.alert({title: 'Registration failed', template: 'Please choose profile picture'});
           return;
       }
 
