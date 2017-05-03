@@ -79,6 +79,26 @@ angular.module('starter', ['ionic', 'starter.controllers', 'ionic-datepicker', '
     }
   })
 
+  .state('app.product', {
+    url: '/product',
+    views: {
+      'menuContent': {
+        templateUrl: 'templates/product.html',
+        controller: 'productCtrl'
+      }
+    }
+  })
+
+  .state('app.addproduct', {
+    url: '/addproduct/:productId',
+    views: {
+      'menuContent': {
+        templateUrl: 'templates/addproduct.html',
+        controller: 'addproductCtrl'
+      }
+    }
+  })
+
   .state('app.blog', {
     url: '/blog',
     views: {
