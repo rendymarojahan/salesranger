@@ -93,6 +93,16 @@ angular.module('starter.controllers', [])
         $scope.settshow = "display: none;";
     }
   };
+  $scope.adm = "";
+  $scope.trigadm = function() {
+    if ($scope.adm === "") {
+        $scope.adm = "active";
+        $scope.admshow = "display: block;";
+    } else if ($scope.adm === "active") {
+        $scope.adm = "";
+        $scope.admshow = "display: none;";
+    }
+  };
 
   $scope.emails = [];
   $scope.emails = TransactionFactory.getEmails();
@@ -452,6 +462,166 @@ angular.module('starter.controllers', [])
         });
       });
   };
+})
+
+.controller('productCtrl', function($scope, $state, $ionicLoading, MasterFactory, $ionicPopup, myCache) {
+
+  $scope.products = [];
+
+  $scope.products = MasterFactory.getProducts();
+  $scope.products.$loaded().then(function (x) {
+    refresh($scope.products, $scope, MasterFactory);
+  }).catch(function (error) {
+      console.error("Error:", error);
+  });
+
+  $scope.$on('$ionicView.beforeEnter', function () {
+    refresh($scope.products, $scope);
+  });
+
+  $scope.edit = function(item) {
+    $state.go('app.addproduct', { productId: item.$id });
+  };
+
+  function refresh(products, $scope, item) {
+  }
+})
+
+.controller('addproductCtrl', function($scope, $state, $stateParams, $ionicHistory, $ionicLoading, MasterFactory, CurrentUserService, PickTransactionServices, $ionicPopup, myCache) {
+
+  $scope.product = {'nama': '','stok': '','harga': '','photo': '','picture': ''};
+  $scope.item = {'photo': ''};
+  $scope.inEditMode = false;
+
+  $scope.$on('$ionicView.beforeEnter', function () {
+    if ($scope.product.picture === ""){
+       $scope.item.photo = PickTransactionServices.photoSelected;
+    } else {
+      $scope.item = {'photo': $scope.product.picture};
+    }
+  });
+
+  if ($stateParams.productId === '') {
+      //
+      // Create Product
+      //
+      $scope.item = {'photo': ''};
+  } else {
+      //
+      // Edit Product
+      //
+      var getproduct = MasterFactory.getProduct($stateParams.productId);
+      $scope.inEditMode = true;
+      $scope.product = getproduct;
+      $scope.item = {'photo': $scope.product.picture};
+  }
+
+  $scope.takepic = function() {
+    
+    var filesSelected = document.getElementById("nameImg").files;
+    if (filesSelected.length > 0) {
+      var fileToLoad = filesSelected[0];
+      var fileReader = new FileReader();
+      fileReader.onload = function(fileLoadedEvent) {
+        var textAreaFileContents = document.getElementById(
+          "textAreaFileContents"
+        );
+        $scope.item = {
+          photo: fileLoadedEvent.target.result
+        };
+        $scope.product.photo = fileLoadedEvent.target.result;
+        PickTransactionServices.updatePhoto($scope.item.photo);
+      };
+
+      fileReader.readAsDataURL(fileToLoad);
+    }
+  };
+
+  $scope.createProduct = function (product) {
+      var filesSelected = document.getElementById("nameImg").files;
+      if (filesSelected.length > 0) {
+        var fileToLoad = filesSelected[0];
+        var fileReader = new FileReader();
+        fileReader.onload = function(fileLoadedEvent) {
+          var textAreaFileContents = document.getElementById(
+            "textAreaFileContents"
+          );
+          $scope.item = {
+            photo: fileLoadedEvent.target.result
+          };
+        };
+
+        fileReader.readAsDataURL(fileToLoad);
+      }
+
+      // Validate form data
+      if (typeof product.nama === 'undefined' || product.nama === '') {
+          $scope.hideValidationMessage = false;
+          $scope.validationMessage = "Please enter nama"
+          return;
+      }
+      if (typeof product.stok === 'undefined' || product.stok === '') {
+          $scope.hideValidationMessage = false;
+          $scope.validationMessage = "Please enter stok"
+          return;
+      }
+      if (typeof product.harga === 'undefined' || product.harga === '') {
+          $scope.hideValidationMessage = false;
+          $scope.validationMessage = "Please enter harga"
+          return;
+      }
+
+      if ($scope.inEditMode) {
+        $ionicLoading.show({
+            template: '<ion-spinner icon="ios"></ion-spinner><br>Editing...'
+        });
+        /* PREPARE DATA FOR FIREBASE*/
+        var photo = $scope.item.photo;
+        $scope.temp = {
+            nama: product.nama,
+            picture: photo,
+            harga: product.harga,
+            stok: product.stok,
+            addedby: CurrentUserService.fullname,
+            datecreated: Date.now(),
+            dateupdated: Date.now()
+        }
+        /* SAVE PRODUCT DATA */
+        var productref = MasterFactory.pRef();
+        var newData = productref.child($stateParams.productId);
+        newData.update($scope.temp, function (ref) {
+        });
+        $ionicHistory.goBack();
+      }else {
+        $ionicLoading.show({
+            template: '<ion-spinner icon="ios"></ion-spinner><br>Adding...'
+        });
+        /* PREPARE DATA FOR FIREBASE*/
+        var photo = $scope.item.photo;
+        $scope.temp = {
+            nama: product.nama,
+            picture: photo,
+            harga: product.harga,
+            stok: product.stok,
+            addedby: CurrentUserService.fullname,
+            datecreated: Date.now(),
+            dateupdated: Date.now()
+        }
+        /* SAVE PRODUCT DATA */
+        var ref = MasterFactory.pRef();
+        ref.push($scope.temp);
+        $ionicHistory.goBack();
+      }
+
+      $ionicLoading.hide();
+      refresh($scope.product, $scope);
+  };
+
+  function refresh(product, $scope, item) {
+
+    $scope.product = {'nama': '','stok': '','harga': '','picture': ''};
+    $scope.item = {'photo': ''};
+  }
 })
 
 .controller('infoCtrl', function($scope, $state, $ionicLoading, MasterFactory, $ionicPopup, myCache) {
