@@ -1,16 +1,6 @@
 {
   "rules": {
-    ".read": true,
-    ".write": true,
-    "overviews": {
-      ".indexOn": [
-        "kind"
-      ]
-    },
-    "blogs": {
-      ".indexOn": [
-        "topic"
-      ]
-    }
+    ".read": "auth != null",
+    ".write": "auth != null"
   }
 }
