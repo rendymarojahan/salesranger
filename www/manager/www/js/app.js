@@ -73,13 +73,13 @@ angular.module('starter', ['ionic', 'starter.controllers', 'ionic-datepicker', '
     views: {
       'menuContent': {
         templateUrl: 'templates/registrationHome.html',
-        controller: 'productCtrl'
+        controller: 'userCtrl'
       }
     }
   })
 
   .state('app.registration', {
-    url: '/registration',
+    url: '/registration/:userId',
     views: {
       'menuContent': {
         templateUrl: 'templates/registration.html',

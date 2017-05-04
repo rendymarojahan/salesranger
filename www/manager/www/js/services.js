@@ -14,12 +14,24 @@ angular.module('starter.services', [])
         var fb = firebase.database().ref();
         var ref = fb.child("users");
         var mRef = {};
+        var uRef = {};
         var members = {};
+        var usersRef = {};
         mRef = fb.child("members").orderByChild('group_id');
         members = $firebaseArray(mRef);
         return {
             ref: function () {
                 return ref;
+            },
+
+            getUsers: function () {
+                uRef = fb.child("users");
+                usersRef = $firebaseArray(uRef);
+                return usersRef;
+            },
+            getUser: function (userid) {
+                var thisUser = usersRef.$getRecord(userid);
+                return thisUser;
             },
             getMember: function (authData) {
                 var deferred = $q.defer();
@@ -345,7 +357,10 @@ angular.module('starter.services', [])
                 var thisEmployee = profileRef.$getRecord(employeeid);
                 return thisEmployee;
             },
-            
+            getUser: function (userId) {
+                var thisUser = fb.child("users").child(userId);;
+                return thisUser;
+            },
             
         };
 })
@@ -685,6 +700,37 @@ angular.module('starter.services', [])
             }
             //console.log(output);
             return output;
+        };
+})
+
+.factory('CustomerFactory', function ($firebaseArray, $q, myCache, CurrentUserService, $timeout) {
+        var fb = firebase.database().ref();
+        var ref = {};
+        var pRef = {};
+        var customersRef = {};
+        var tasksRef = {};
+        var uRef = fb.child("customers");
+        return {
+            ref: function () {
+                ref = fb.child("customers");
+                return ref;
+            },
+            pRef: function () {
+                pRef = fb.child("tasks");
+                return pRef;
+            },
+            getCustomers: function () {
+                ref = fb.child("customers").orderByChild('isEnable');
+                customersRef = $firebaseArray(ref);
+                return customersRef;
+            },
+            getTasks: function () {
+                ref = fb.child("tasks");
+                tasksRef = $firebaseArray(ref);
+                return tasksRef;
+            }
+            
+            
         };
 })
 
