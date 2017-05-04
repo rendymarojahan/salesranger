@@ -68,6 +68,15 @@ angular.module('starter', ['ionic', 'starter.controllers', 'ionic-datepicker', '
     templateUrl: 'templates/menu.html',
     controller: 'AppCtrl'
   })
+  .state('app.registrationHome', {
+    url: '/registrationHome',
+    views: {
+      'menuContent': {
+        templateUrl: 'templates/registrationHome.html',
+        controller: 'productCtrl'
+      }
+    }
+  })
 
   .state('app.registration', {
     url: '/registration',
@@ -108,6 +117,26 @@ angular.module('starter', ['ionic', 'starter.controllers', 'ionic-datepicker', '
       }
     }
   })
+
+.state('app.kontrolHarian', {
+    url: '/kontrolHarian',
+    views: {
+      'menuContent': {
+        templateUrl: 'templates/kontrolHarian.html',
+        controller: ''
+      }
+    }
+  })
+
+  .state('app.KontrolBulanan', {
+    url: '/kontrolBulanan',
+    views: {
+      'menuContent': {
+        templateUrl: 'templates/kontrolBulanan.html',
+        controller: ''
+      }
+    }
+  })  
 
   .state('app.addblog', {
     url: '/addblog/:blogId',
@@ -268,6 +297,17 @@ angular.module('starter', ['ionic', 'starter.controllers', 'ionic-datepicker', '
 	    }
 	 }
   })
+
+.state('app.customer', {
+    url: '/customer',
+    views: {
+      'menuContent': {
+        templateUrl: 'templates/customer.html',
+        controller: ''
+      }
+    }
+  })
+
 .state('app.addcustomer', {
     url: '/addcustomer',
     views: {
