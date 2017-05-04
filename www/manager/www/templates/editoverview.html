@@ -42,16 +42,16 @@
 
                 <!-- start form for validation -->
                 <form >
-                  <label>Title * :</label>
+                  <label>Nama Attribut * :</label>
                   <input type="text" class="form-control" ng-model="overview.title" required /><br>
 
-                  <label for="desc">Desc * :</label>
+                  <label for="desc">Tipe data * :</label>
                   <textarea class="form-control" ng-model="overview.desc" required></textarea><br>
 
                   <label><input type="checkbox" ng-click="addinfos()">Add Info ?</label><br>
 	                <div ng-repeat="item in infos">
 	                  <div class="form-group">
-		                <label>Information * :</label>
+		                <label>Nama Kelas * :</label>
 		                <div>
 		                  <select ng-show="item.sel" class="select2_single form-control" tabindex="-1" ng-model="item.isi" ng-options="information.title for information in informations | orderBy:'title'" ng-change="chanin(item.info)">
 		                  </select>
