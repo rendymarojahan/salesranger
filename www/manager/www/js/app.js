@@ -277,6 +277,24 @@ angular.module('starter', ['ionic', 'starter.controllers', 'ionic-datepicker', '
       }
     }
   })
+.state('app.atribut', {
+    url: '/atribut',
+    views: {
+      'menuContent': {
+        templateUrl: 'templates/atribut.html',
+        controller: 'registrationCtrl'
+      }
+    }
+  })
+.state('app.addatribut', {
+    url: '/addatribut',
+    views: {
+      'menuContent': {
+        templateUrl: 'templates/addatribut.html',
+        controller: 'registrationCtrl'
+      }
+    }
+  })
 
   ;
   // if none of the above states are matched, use this as the fallback
