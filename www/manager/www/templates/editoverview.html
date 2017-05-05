@@ -48,10 +48,10 @@
                   <label for="desc">Tipe data * :</label>
                   <textarea class="form-control" ng-model="overview.desc" required></textarea><br>
 
-                  <label><input type="checkbox" ng-click="addinfos()">Add Info ?</label><br>
+                  <label><input type="checkbox" ng-click="addinfos()">Add info ?</label><br>
 	                <div ng-repeat="item in infos">
 	                  <div class="form-group">
-		                <label>Nama Kelas * :</label>
+		                <label>Nama info * :</label>
 		                <div>
 		                  <select ng-show="item.sel" class="select2_single form-control" tabindex="-1" ng-model="item.isi" ng-options="information.title for information in informations | orderBy:'title'" ng-change="chanin(item.info)">
 		                  </select>
@@ -61,10 +61,10 @@
 		              </div>
 	                </div>
 
-	              <label><input type="checkbox" ng-click="addtags()">Add Tag ?</label><br>
+	              <label><input type="checkbox" ng-click="addtags()">Add Class ?</label><br>
 	                <div ng-repeat="item in tags">
 	                  <div class="form-group">
-		                <label>Tag * :</label>
+		                <label>Class * :</label>
 		                <div>
 		                  <select ng-show="item.sel" class="select2_single form-control" tabindex="-1" ng-model="item.isi" ng-options="tage.title for tage in tages | orderBy:'title'" ng-change="chantag(item.tag)">
 		                  </select>

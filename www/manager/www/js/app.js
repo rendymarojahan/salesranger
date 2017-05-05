@@ -303,17 +303,17 @@ angular.module('starter', ['ionic', 'starter.controllers', 'ionic-datepicker', '
     views: {
       'menuContent': {
         templateUrl: 'templates/customer.html',
-        controller: ''
+        controller: 'customerCtrl'
       }
     }
   })
 
 .state('app.addcustomer', {
-    url: '/addcustomer',
+    url: '/addcustomer/:customerId',
     views: {
       'menuContent': {
         templateUrl: 'templates/addcustomer.html',
-        controller: 'registrationCtrl'
+        controller: 'addcustomerCtrl'
       }
     }
   })

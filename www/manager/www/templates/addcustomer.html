@@ -43,7 +43,7 @@
                 <!-- start form for validation -->
                 <form >
                   <label>Nama Pelanggan * :</label>
-                  <input type="text" class="form-control" ng-model="customer.fullname" required />
+                  <input type="text" class="form-control" ng-model="customer.name" required />
 
                   <label for="email">Alamat * :</label>
                   <input type="text" class="form-control" ng-model="customer.address" required />
@@ -52,7 +52,7 @@
                   <input type="email" class="form-control" ng-model="customer.email" required />
 
                   <label for="email">Nomor Telepon * :</label>
-                  <input type="text" class="form-control" ng-model="customer.telepon" required>
+                  <input type="text" class="form-control" ng-model="customer.phone" required>
 
 
                   <label>Gender *:</label>
@@ -71,7 +71,7 @@
                     </div>
                     <br>
                     <br>
-                    <span class="btn btn-primary" ng-click="createMember(customer)">Submit</span>
+                    <span class="btn btn-primary" ng-click="createCustomer(customer)">Submit</span>
 
                 </form>
                 <!-- end form for validations -->
