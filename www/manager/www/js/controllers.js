@@ -259,7 +259,7 @@ angular.module('starter.controllers', [])
   }
 })
 
-.controller('registrationCtrl', function($scope, $state, $ionicLoading, MembersFactory, CurrentUserService, PickTransactionServices, $ionicPopup, myCache, $stateParams) {
+.controller('registrationCtrl', function($scope, $state, $ionicLoading, MembersFactory, CurrentUserService, PickTransactionServices, $ionicPopup, myCache, $stateParams, $ionicHistory) {
 
   $scope.user = {'fullname': '','email': '','picture': '','gender': ''};
   $scope.item = {'photo': ''};
@@ -304,21 +304,21 @@ angular.module('starter.controllers', [])
     $scope.agen = "checked";
     $scope.headsales = "";
     $scope.manager = "";
-    $scope.level = "finance";
+    $scope.level = "agen";
   };
-  $scope.trigsales = function() {
+  $scope.trigheadsales = function() {
     $scope.admin = "";
     $scope.agen = "";
     $scope.headsales = "checked";
     $scope.manager = "";
-    $scope.level = "sales";
+    $scope.level = "Kepala Penjualan";
   };
-  $scope.trigcustomer = function() {
+  $scope.trigmanager = function() {
     $scope.admin = "";
     $scope.agen = "";
     $scope.headsales = "";
     $scope.manager = "checked";
-    $scope.level = "customer";
+    $scope.level = "Manajer";
   };
 
   if ($stateParams.userId === '') {
@@ -400,10 +400,35 @@ angular.module('starter.controllers', [])
           return;
       }
 
-      $ionicLoading.show({
-          template: '<ion-spinner icon="ios"></ion-spinner><br>Registering...'
-      });
+      if ($scope.inEditMode) {
+        $ionicLoading.show({
+            template: '<ion-spinner icon="ios"></ion-spinner><br>Editing...'
+        });
+        var photo = $scope.item.photo;
+        var gender = $scope.gender;
+        var level = $scope.level;
 
+        $scope.temp = {
+            fullname: user.fullname,
+            picture: photo,
+            email: user.email,
+            gender: gender,
+            level: level,
+            datecreated: Date.now(),
+            dateupdated: Date.now()
+        }
+
+        MembersFactory.saveUser($scope.temp, function (ref) {
+        });
+        $ionicLoading.hide();
+        $ionicHistory.goBack();
+
+
+      }else {
+      //PREPARE FOR DATABASE
+        $ionicLoading.show({
+            template: '<ion-spinner icon="ios"></ion-spinner><br>Registering...'
+        });
       firebase.auth().createUserWithEmailAndPassword(user.email,user.password).catch(function(error) {
         switch (error.code) {
             case "auth/email-already-in-use":
@@ -482,6 +507,7 @@ angular.module('starter.controllers', [])
           $state.go('app.dashboard');
         });
       });
+    }
   };
 })
 

@@ -33,6 +33,11 @@ angular.module('starter.services', [])
                 var thisUser = usersRef.$getRecord(userid);
                 return thisUser;
             },
+            saveUser: function (temp) {
+                usersRef.$save(temp).then(function (ref) {
+                    //ref.key() = posting.$id;
+                });
+            },
             getMember: function (authData) {
                 var deferred = $q.defer();
                 var memberRef = ref.child(authData.uid);
