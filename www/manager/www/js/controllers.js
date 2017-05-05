@@ -1021,7 +1021,8 @@ angular.module('starter.controllers', [])
         newData.update($scope.temp, function (ref) {
         });
         $ionicHistory.goBack();
-      }else {
+      }
+      else {
         $ionicLoading.show({
             template: '<ion-spinner icon="ios"></ion-spinner><br>Adding...'
         });
@@ -2840,7 +2841,7 @@ angular.module('starter.controllers', [])
   }
 })
 
-.controller('addcustomerCtrl', function($scope, $ionicLoading, CustomerFactory, CurrentUserService, $ionicPopup, myCache) {
+.controller('addcustomerCtrl', function($scope, $ionicLoading, CustomerFactory, CurrentUserService, $ionicPopup, myCache, $ionicHistory) {
 
   $scope.customer = {'name': '','address': '' ,'email': '' ,'phone': '' ,'gender': ''};
   // Gender
@@ -2871,11 +2872,13 @@ angular.module('starter.controllers', [])
           return;
       }
 
-      $ionicLoading.show({
-          template: '<ion-spinner icon="ios"></ion-spinner><br>Adding...'
-      });
+      else{
 
-      /* PREPARE DATA FOR FIREBASE*/
+        $ionicLoading.show({
+            template: '<ion-spinner icon="ios"></ion-spinner><br>Adding...'
+        });
+
+        /* PREPARE DATA FOR FIREBASE*/
       $scope.temp = {
           name: customer.name,
           address: customer.address,
@@ -2887,12 +2890,19 @@ angular.module('starter.controllers', [])
           dateupdated: Date.now()
       }
 
-      /* SAVE MEMBER DATA */
-      var ref = CustomerFactory.ref();
-      ref.push($scope.temp);
 
+
+        /* SAVE PRODUCT DATA */
+        var newCustomer = CustomerFactory.ref();
+        newCustomer.push($scope.temp);
+        CustomerFactory.saveCustomer($scope.temp, function (ref) {
+        });
+       
       $ionicLoading.hide();
+      $ionicHistory.goBack();
+      
       refresh($scope.customer, $scope);
+      }   
   };
 
   function refresh(customer, $scope, temp) {
