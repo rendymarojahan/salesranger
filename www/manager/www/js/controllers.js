@@ -259,13 +259,18 @@ angular.module('starter.controllers', [])
   }
 })
 
-.controller('registrationCtrl', function($scope, $state, $ionicLoading, MembersFactory, CurrentUserService, PickTransactionServices, $ionicPopup, myCache) {
+.controller('registrationCtrl', function($scope, $state, $ionicLoading, MembersFactory, CurrentUserService, PickTransactionServices, $ionicPopup, myCache, $stateParams, $ionicHistory) {
 
-  $scope.user = {};
+  $scope.user = {'fullname': '','email': '','picture': '','gender': ''};
   $scope.item = {'photo': ''};
 
+
   $scope.$on('$ionicView.beforeEnter', function () {
-    $scope.item.photo = PickTransactionServices.photoSelected;
+    if ($scope.user.picture === ""){
+       $scope.item.photo = PickTransactionServices.photoSelected;
+    } else {
+      $scope.item = {'photo': $scope.user.picture};
+    }
   });
 
   // Gender
@@ -299,22 +304,38 @@ angular.module('starter.controllers', [])
     $scope.agen = "checked";
     $scope.headsales = "";
     $scope.manager = "";
-    $scope.level = "finance";
+    $scope.level = "agen";
   };
-  $scope.trigsales = function() {
+  $scope.trigheadsales = function() {
     $scope.admin = "";
     $scope.agen = "";
     $scope.headsales = "checked";
     $scope.manager = "";
-    $scope.level = "sales";
+    $scope.level = "Kepala Penjualan";
   };
-  $scope.trigcustomer = function() {
+  $scope.trigmanager = function() {
     $scope.admin = "";
     $scope.agen = "";
     $scope.headsales = "";
     $scope.manager = "checked";
-    $scope.level = "customer";
+    $scope.level = "Manajer";
   };
+
+  if ($stateParams.userId === '') {
+      //
+      // Create user
+      //
+      $scope.item = {'photo': '', 'picture':''};
+  } else {
+      //
+      // Edit Product
+      //
+
+      var getUser = MembersFactory.getUser($stateParams.userId);
+      $scope.inEditMode = true;
+      $scope.user = getUser;
+      $scope.item = {'photo': $scope.user.picture};
+  }
 
   $scope.takepic = function() {
     
@@ -373,16 +394,41 @@ angular.module('starter.controllers', [])
           return;
       }
 
-      if (typeof user.filesSelected === 'undefined' || user.filesSelected === '') {
+      if (typeof $scope.item.photo === 'undefined' || $scope.item.photo === '') {
           $scope.hideValidationMessage = false;
           $ionicPopup.alert({title: 'Registration failed', template: 'Please choose profile picture'});
           return;
       }
 
-      $ionicLoading.show({
-          template: '<ion-spinner icon="ios"></ion-spinner><br>Registering...'
-      });
+      if ($scope.inEditMode) {
+        $ionicLoading.show({
+            template: '<ion-spinner icon="ios"></ion-spinner><br>Editing...'
+        });
+        var photo = $scope.item.photo;
+        var gender = $scope.gender;
+        var level = $scope.level;
 
+        $scope.temp = {
+            fullname: user.fullname,
+            picture: photo,
+            email: user.email,
+            gender: gender,
+            level: level,
+            datecreated: Date.now(),
+            dateupdated: Date.now()
+        }
+
+        MembersFactory.saveUser($scope.temp, function (ref) {
+        });
+        $ionicLoading.hide();
+        $ionicHistory.goBack();
+
+
+      }else {
+      //PREPARE FOR DATABASE
+        $ionicLoading.show({
+            template: '<ion-spinner icon="ios"></ion-spinner><br>Registering...'
+        });
       firebase.auth().createUserWithEmailAndPassword(user.email,user.password).catch(function(error) {
         switch (error.code) {
             case "auth/email-already-in-use":
@@ -461,7 +507,390 @@ angular.module('starter.controllers', [])
           $state.go('app.dashboard');
         });
       });
+    }
   };
+})
+
+.controller('detprofileCtrl', function($scope, $state, $stateParams, $ionicLoading, $ionicHistory, ContactsFactory, MasterFactory, CurrentUserService, PickTransactionServices, $ionicPopup, myCache) {
+
+  $scope.profile = {'title': '','desc': '','picture': ''};
+  $scope.item = {'photo': '','picture': ''};
+  $scope.inEditMode = false;
+  $scope.informations = MasterFactory.getInformations();
+  $scope.informations.$loaded().then(function (x) {
+    refresh($scope.informations, $scope, MasterFactory);
+  }).catch(function (error) {
+      console.error("Error:", error);
+  });
+  $scope.features = MasterFactory.getFeatures();
+  $scope.features.$loaded().then(function (x) {
+    refresh($scope.features, $scope, MasterFactory);
+  }).catch(function (error) {
+      console.error("Error:", error);
+  });
+
+  if ($stateParams.profileId === '') {
+      //
+      // Create Material
+      //
+      $scope.infos = [];
+      $scope.tests = [];
+      $scope.skills = [];
+      $scope.item = {'photo': '','picture': ''};
+      $scope.addinfos = function () {
+          $scope.infos.push({})
+      }
+      $scope.addtags = function () {
+          $scope.tests.push({})
+      }
+      $scope.addfeats = function () {
+          $scope.skills.push({})
+      }
+      angular.forEach($scope.infos, function (info) {
+          if (info.info !== "") {
+            MasterFactory.getInfo(info.info).then(function(data){
+              info.sel = false;
+              info.isi = {$id: info.info, value: info.value, title: info.title, icon: info.icon};
+            })
+          }
+      })
+      $scope.editin = function (data) {
+        angular.forEach($scope.infos, function (info) {
+            if (info.info === data) {
+              info.sel = true;
+            }
+        })
+      }
+      $scope.chanin = function (data) {
+        angular.forEach($scope.infos, function (info) {
+            if (info.info === data) {
+              if (info.isi.$id === data){
+                info.sel = false;
+              }
+            }
+        })
+      }
+      angular.forEach($scope.skills, function (feat) {
+          if (feat.feature !== "") {
+            MasterFactory.getFeat(feat.feature).then(function(data){
+              feat.sel = false;
+              feat.isi = {$id: feat.feature, title: feat.title, icon: feat.icon};
+            })
+          }
+      })
+      $scope.editfeat = function (data) {
+        angular.forEach($scope.skills, function (feat) {
+            if (feat.feature === data) {
+              feat.sel = true;
+            }
+        })
+      }
+      $scope.chanfeat = function (data) {
+        angular.forEach($scope.skills, function (feat) {
+            if (feat.feature === data) {
+              if (feat.isi.$id === data){
+                feat.sel = false;
+              }
+            }
+        })
+      }
+  } else {
+      //
+      // Edit Material
+      //
+      var getprofile = ContactsFactory.getUser($stateParams.profileId);
+      $scope.inEditMode = true;
+      $scope.profile = getprofile;
+      $scope.infos = getprofile.infos;
+      if ($scope.infos === undefined) {
+        $scope.infos = [];
+      }
+      angular.forEach($scope.infos, function (info) {
+          if (info.info !== "") {
+            MasterFactory.getInfo(info.info).then(function(data){
+              info.sel = false;
+              info.isi = {$id: info.info, value: info.value, title: info.title, icon: info.icon};
+            })
+          }
+      })
+      $scope.editin = function (data) {
+        angular.forEach($scope.infos, function (info) {
+            if (info.info === data) {
+              info.sel = true;
+            }
+        })
+      }
+      $scope.chanin = function (data) {
+        angular.forEach($scope.infos, function (info) {
+            if (info.info === data) {
+              if (info.isi.$id === data){
+                info.sel = false;
+              }
+            }
+        })
+      }
+      $scope.tests = getprofile.testimonis;
+      if ($scope.tests === undefined) {
+        $scope.tests = [];
+      }
+      $scope.skills = getprofile.skills;
+      if ($scope.skills === undefined) {
+        $scope.skills = [];
+      }
+      angular.forEach($scope.skills, function (feat) {
+          if (feat.feature !== "") {
+            MasterFactory.getFeat(feat.feature).then(function(data){
+              feat.sel = false;
+              feat.isi = {$id: feat.feature, title: feat.title, icon: feat.icon};
+            })
+          }
+      })
+      $scope.editfeat = function (data) {
+        angular.forEach($scope.skills, function (feat) {
+            if (feat.feature === data) {
+              feat.sel = true;
+            }
+        })
+      }
+      $scope.chanfeat = function (data) {
+        angular.forEach($scope.skills, function (feat) {
+            if (feat.feature === data) {
+              if (feat.isi.$id === data){
+                feat.sel = false;
+              }
+            }
+        })
+      }
+      $scope.item = {'photo': $scope.profile.picture};
+      $scope.addinfos = function () {
+          $scope.infos.push({})
+      }
+      $scope.addtags = function () {
+          $scope.tests.push({})
+      }
+      $scope.addfeats = function () {
+          $scope.skills.push({})
+      }
+  }
+
+  $scope.$on('$ionicView.beforeEnter', function () {
+    $scope.profile = getprofile;
+    $scope.item = {'photo': $scope.profile.picture, 'picture':''};
+  });
+
+  $scope.takepic = function() {
+    
+    var filesSelected = document.getElementById("nameImg").files;
+    if (filesSelected.length > 0) {
+      var fileToLoad = filesSelected[0];
+      var fileReader = new FileReader();
+      fileReader.onload = function(fileLoadedEvent) {
+        var textAreaFileContents = document.getElementById(
+          "textAreaFileContents"
+        );
+        $scope.item = {
+          photo: fileLoadedEvent.target.result
+        };
+        PickTransactionServices.updatePhoto($scope.item.photo);
+      };
+
+      fileReader.readAsDataURL(fileToLoad);
+    }
+  };
+
+  $scope.takepict = function(data) {
+    
+    var filesSelected = document.getElementById("0").files;
+    if (filesSelected.length > 0) {
+      var fileToLoad = filesSelected[0];
+      var fileReader = new FileReader();
+      fileReader.onload = function(fileLoadedEvent) {
+        var textAreaFileContents = document.getElementById(
+          "textAreaFileContents"
+        );
+        $scope.item = {
+          picture: fileLoadedEvent.target.result
+        };
+        $scope.tests.fill({picture: $scope.item.picture});
+      };
+
+      fileReader.readAsDataURL(fileToLoad);
+    }
+  };
+
+  $scope.createProfile = function (profile,informations,tests,skills) {
+      var filesSelected = document.getElementById("nameImg").files;
+      if (filesSelected.length > 0) {
+        var fileToLoad = filesSelected[0];
+        var fileReader = new FileReader();
+        fileReader.onload = function(fileLoadedEvent) {
+          var textAreaFileContents = document.getElementById(
+            "textAreaFileContents"
+          );
+          $scope.item = {
+            photo: fileLoadedEvent.target.result
+          };
+        };
+
+        fileReader.readAsDataURL(fileToLoad);
+      }
+
+      // Validate form data
+      if (typeof profile.name === 'undefined' || profile.name === '') {
+          $scope.hideValidationMessage = false;
+          $scope.validationMessage = "Please enter name"
+          return;
+      }
+      if (typeof profile.desc === 'undefined' || profile.desc === '') {
+          $scope.hideValidationMessage = false;
+          $scope.validationMessage = "Please enter desc"
+          return;
+      }
+
+      $ionicLoading.show({
+          template: '<ion-spinner icon="ios"></ion-spinner><br>Adding...'
+      });
+
+      if ($stateParams.profileId === '') {
+
+        /* PREPARE DATA FOR FIREBASE*/
+        var photo = $scope.item.photo;
+        $scope.temp = {
+            name: profile.name,
+            picture: photo,
+            desc: profile.desc,
+            addedby: CurrentUserService.fullname,
+            datecreated: Date.now(),
+            dateupdated: Date.now()
+        }
+
+        /* SAVE OVERVIEW DATA */
+        var ref = ContactsFactory.eRef();
+        var newChildRef = ref.push($scope.temp);
+        $scope.idpr = newChildRef.key;
+        $scope.datai = [];
+        $scope.datat = [];
+        $scope.dataf = [];
+        /* SAVE INFO DATA */
+        angular.forEach(informations, function (information) {
+            if (information.isi.$id !== undefined) {
+                $scope.data = {
+                    info: information.isi.$id,
+                    title: information.isi.title,
+                    value: information.value,
+                    icon: information.isi.icon
+                }
+                $scope.datai.push($scope.data);
+            }
+        })
+        angular.forEach(tests, function (testi) {
+            if (testi.name !== '') {
+                $scope.data = {
+                    name: testi.name,
+                    title: testi.title,
+                    company: testi.company,
+                    desc: testi.desc,
+                    picture: testi.picture
+                }
+                $scope.datat.push($scope.data);
+            }
+        })
+        angular.forEach(skills, function (featur) {
+            if (featur.isi.$id !== undefined) {
+                $scope.data = {
+                    feature: featur.isi.$id,
+                    title: featur.isi.title,
+                    icon: featur.isi.icon
+                }
+                $scope.dataf.push($scope.data);
+            }
+        })
+
+        var infoRef = ref.child($scope.idpr).child("infos");
+        infoRef.set($scope.datai);
+
+        var tagRef = ref.child($scope.idpr).child("testimonis");
+        tagRef.set($scope.datat);
+
+        var featRef = ref.child($scope.idpr).child("skills");
+        featRef.set($scope.dataf);
+
+        $ionicLoading.hide();
+        refresh($scope.profile, $scope);
+        $ionicHistory.goBack();
+
+      } else {
+
+        /* PREPARE DATA FOR FIREBASE*/
+        var photo = $scope.item.photo;
+        $scope.temp = {
+            name: profile.name,
+            picture: photo,
+            desc: profile.desc,
+            addedby: CurrentUserService.fullname,
+            datecreated: Date.now(),
+            dateupdated: Date.now()
+        }
+
+        /* SAVE OVERVIEW DATA */
+        var ref = ContactsFactory.eRef();
+        var childRef = ref.child($stateParams.profileId);
+        childRef.set($scope.temp);
+        $scope.datai = [];
+        $scope.datat = [];
+        $scope.dataf = [];
+        /* SAVE INFO DATA */
+        angular.forEach(informations, function (information) {
+            if (information.isi.$id !== undefined) {
+                $scope.data = {
+                    info: information.isi.$id,
+                    title: information.isi.title,
+                    value: information.value,
+                    icon: information.isi.icon
+                }
+                $scope.datai.push($scope.data);
+            }
+        })
+        angular.forEach(tests, function (testi) {
+            if (testi.name !== '') {
+                $scope.data = {
+                    name: testi.name,
+                    title: testi.title,
+                    company: testi.company,
+                    desc: testi.desc,
+                    picture: testi.picture
+                }
+                $scope.datat.push($scope.data);
+            }
+        })
+        angular.forEach(skills, function (featur) {
+            if (featur.isi.$id !== undefined) {
+                $scope.data = {
+                    feature: featur.isi.$id,
+                    title: featur.isi.title,
+                    icon: featur.isi.icon
+                }
+                $scope.dataf.push($scope.data);
+            }
+        })
+
+        var infoRef = ref.child($stateParams.profileId).child("infos");
+        infoRef.set($scope.datai);
+
+        var tagRef = ref.child($stateParams.profileId).child("testimonis");
+        tagRef.set($scope.datat);
+
+        var featRef = ref.child($stateParams.profileId).child("skills");
+        featRef.set($scope.dataf);
+
+        $ionicLoading.hide();
+        refresh($scope.profile, $scope);
+        $ionicHistory.goBack();
+    }
+  };
+
+  function refresh(temp, profile, $scope, item) {
+  }
 })
 
 .controller('productCtrl', function($scope, $state, $ionicLoading, MasterFactory, $ionicPopup, myCache) {
@@ -2317,6 +2746,8 @@ angular.module('starter.controllers', [])
   }
 })
 
+
+
 .controller('loginCtrl', function($scope, $rootScope, $stateParams, $ionicHistory, $cacheFactory, $ionicLoading, $ionicPopup, $state, MembersFactory, myCache, CurrentUserService) {
 
   $scope.user = {};
@@ -2368,6 +2799,25 @@ angular.module('starter.controllers', [])
           });
         });
     }
-});
+})
+
+.controller("userCtrl", function($scope, MembersFactory, $state) {
+$scope.users = [];
+$scope.users = MembersFactory.getUsers();
+  $scope.users.$loaded().then(function (x) {
+    refresh($scope.users, $scope, MembersFactory);
+  }).catch(function (error) {
+      console.error("Error:", error);
+  });
+
+  $scope.edit = function(item) {
+    $state.go('app.registration', { userId: item.$id });
+  };
+
+  function refresh(users, $scope, MembersFactory) {
+  }
+})
+
+;
 
 
