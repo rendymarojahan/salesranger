@@ -724,6 +724,12 @@ angular.module('starter.services', [])
                 pRef = fb.child("tasks");
                 return pRef;
             },
+
+            saveCustomer: function (temp) {
+                customersRef.$save(temp).then(function (ref) {
+                    //ref.key() = posting.$id;
+                });
+            },
             getCustomers: function () {
                 ref = fb.child("customers").orderByChild('isEnable');
                 customersRef = $firebaseArray(ref);

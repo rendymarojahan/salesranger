@@ -1021,7 +1021,8 @@ angular.module('starter.controllers', [])
         newData.update($scope.temp, function (ref) {
         });
         $ionicHistory.goBack();
-      }else {
+      }
+      else {
         $ionicLoading.show({
             template: '<ion-spinner icon="ios"></ion-spinner><br>Adding...'
         });
@@ -2747,7 +2748,6 @@ angular.module('starter.controllers', [])
 })
 
 
-
 .controller('loginCtrl', function($scope, $rootScope, $stateParams, $ionicHistory, $cacheFactory, $ionicLoading, $ionicPopup, $state, MembersFactory, myCache, CurrentUserService) {
 
   $scope.user = {};
@@ -2802,19 +2802,112 @@ angular.module('starter.controllers', [])
 })
 
 .controller("userCtrl", function($scope, MembersFactory, $state) {
-$scope.users = [];
-$scope.users = MembersFactory.getUsers();
-  $scope.users.$loaded().then(function (x) {
-    refresh($scope.users, $scope, MembersFactory);
+  $scope.users = [];
+  $scope.users = MembersFactory.getUsers();
+    $scope.users.$loaded().then(function (x) {
+      refresh($scope.users, $scope, MembersFactory);
+    }).catch(function (error) {
+        console.error("Error:", error);
+    });
+
+    $scope.edit = function(item) {
+      $state.go('app.registration', { userId: item.$id });
+    };
+
+    function refresh(users, $scope, MembersFactory) {
+    }
+})
+
+.controller('customerCtrl', function($scope, $state, $ionicLoading, CustomerFactory, $ionicPopup, myCache) {
+
+  $scope.customers = [];
+
+  $scope.customers = CustomerFactory.getCustomers();
+  $scope.customers.$loaded().then(function (x) {
+    refresh($scope.customer, $scope, CustomerFactory);
   }).catch(function (error) {
       console.error("Error:", error);
   });
 
+  $scope.$on('$ionicView.beforeEnter', function () {
+    refresh($scope.informations, $scope);
+  });
+
   $scope.edit = function(item) {
-    $state.go('app.registration', { userId: item.$id });
+    $state.go('app.addcustomer', { customerId: item.$id });
   };
 
-  function refresh(users, $scope, MembersFactory) {
+  function refresh(informations, $scope, item) {
+  }
+})
+
+.controller('addcustomerCtrl', function($scope, $ionicLoading, CustomerFactory, CurrentUserService, $ionicPopup, myCache, $ionicHistory) {
+
+  $scope.customer = {'name': '','address': '' ,'email': '' ,'phone': '' ,'gender': ''};
+  // Gender
+    $scope.male = "";
+    $scope.female = "";
+    $scope.trigmale = function() {
+    $scope.male = "checked";
+    $scope.female = "";
+    $scope.gender = "male";
+    };
+  $scope.trigfemale = function() {
+    $scope.male = "";
+    $scope.female = "checked";
+    $scope.gender = "female";
+    };
+
+  $scope.createCustomer = function (customer) {
+
+      // Validate form data
+      if (typeof customer.name === 'undefined' || customer.name === '') {
+          $scope.hideValidationMessage = false;
+          $scope.validationMessage = "Please enter name"
+          return;
+      }
+      if (typeof customer.phone === 'undefined' || customer.phone === '') {
+          $scope.hideValidationMessage = false;
+          $scope.validationMessage = "Please enter phone number"
+          return;
+      }
+
+      else{
+
+        $ionicLoading.show({
+            template: '<ion-spinner icon="ios"></ion-spinner><br>Adding...'
+        });
+
+        /* PREPARE DATA FOR FIREBASE*/
+      $scope.temp = {
+          name: customer.name,
+          address: customer.address,
+          email: customer.email,
+          phone: customer.phone,
+          gender: customer.gender,
+          addedby: CurrentUserService.fullname,
+          datecreated: Date.now(),
+          dateupdated: Date.now()
+      }
+
+
+
+        /* SAVE PRODUCT DATA */
+        var newCustomer = CustomerFactory.ref();
+        newCustomer.push($scope.temp);
+        CustomerFactory.saveCustomer($scope.temp, function (ref) {
+        });
+       
+      $ionicLoading.hide();
+      $ionicHistory.goBack();
+      
+      refresh($scope.customer, $scope);
+      }   
+  };
+
+  function refresh(customer, $scope, temp) {
+
+    $scope.customer = {'name': '','address': '' ,'email': '' ,'phone': '' ,'gender': ''};
   }
 })
 
