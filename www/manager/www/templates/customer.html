@@ -21,7 +21,6 @@
                           <th>Jenis Kelamin</th>
                           <th>Alamat</th>
                           <th>Telepon</th>
-                          <th>Agen</th>
                           <th>Edit Data</th>
                           <th>Delete</th>
                         </tr>
@@ -31,15 +30,14 @@
                       <tbody>
                       <!--menampilkan data pelanggan-->
                       <tr ng-repeat="customer in customers">
-                        <td>{{customer.name}}</td> 
+                        <td>{{customer.firstName}}</td> 
                         <td>{{customer.gender}}</td> 
                         <td>{{customer.email}}</td>
-                        <td>{{customer.telepon}}</td>
-                        <td>{{customer.agen}}</td> <!--agen dengan menggunakan drop down list-->   
-                        <td><button type="button" class="btn btn-primary btn-xs" ng-click="customer(user)">
+                        <td>{{customer.telephone}}</td>
+                        <td><button type="button" class="btn btn-primary btn-xs" ng-click="addcustomer()">
                               <i class="fa fa-gears"> </i> Edit Data
                             </button></td>
-                        <td><button type="button" class="btn btn-primary btn-xs" ng-click="edit(user)">
+                        <td><button type="button" class="btn btn-primary btn-xs" ng-click="deletecustomer(user)">
                           <i class="fa fa-gears"> </i> Delete  Data
                         </button></td>
                       </tr>
