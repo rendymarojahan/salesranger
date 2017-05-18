@@ -335,6 +335,42 @@ angular.module('starter', ['ionic', 'starter.controllers', 'ionic-datepicker', '
       }
     }
   })
+.state('app.actcustomer', {
+    url: '/actcustomer',
+    views: {
+      'menuContent': {
+        templateUrl: 'templates/actcustomer.html',
+        controller: ''
+      }
+    }
+  })
+.state('app.actagen', {
+    url: '/actagen',
+    views: {
+      'menuContent': {
+        templateUrl: 'templates/actagen.html',
+        controller: ''
+      }
+    }
+  })
+.state('app.agen', {
+    url: '/agen',
+    views: {
+      'menuContent': {
+        templateUrl: 'templates/agen.html',
+        controller: ''
+      }
+    }
+  })
+.state('app.uploadcustomer', {
+    url: '/uploadcustomer/:customerId',
+    views: {
+      'menuContent': {
+        templateUrl: 'templates/uploadcustomer.html',
+        controller: ''
+      }
+    }
+  })
 
   ;
   // if none of the above states are matched, use this as the fallback
