@@ -2804,15 +2804,19 @@ angular.module('starter.controllers', [])
 .controller("userCtrl", function($scope, MembersFactory, $state) {
   $scope.users = [];
   $scope.users = MembersFactory.getUsers();
-    $scope.users.$loaded().then(function (x) {
-      refresh($scope.users, $scope, MembersFactory);
-    }).catch(function (error) {
-        console.error("Error:", error);
-    });
+  $scope.users.$loaded().then(function (x) {
+    refresh($scope.users, $scope, MembersFactory);
+  }).catch(function (error) {
+      console.error("Error:", error);
+  });
 
-    $scope.edit = function(item) {
-      $state.go('app.registration', { userId: item.$id });
-    };
+  $scope.edit = function(item) {
+    $state.go('app.registration', { userId: item.$id });
+  };
+  $scope.delete = function(item){
+    var dRef = MembersFactory.getUser(item.$id);
+    dRef.remove();
+  };
 
     function refresh(users, $scope, MembersFactory) {
     }
@@ -2833,8 +2837,13 @@ angular.module('starter.controllers', [])
     refresh($scope.informations, $scope);
   });
 
+
   $scope.edit = function(item) {
     $state.go('app.addcustomer', { customerId: item.$id });
+  };
+
+  $scope.delete = function(item) {
+    $state.go('app.deletecustomer', { customerId: item.$id });
   };
 
   function refresh(informations, $scope, item) {
@@ -2880,7 +2889,7 @@ angular.module('starter.controllers', [])
 
         /* PREPARE DATA FOR FIREBASE*/
       $scope.temp = {
-          name: customer.fullname,
+          name: customer.name,
           address: customer.address,
           email: customer.email,
           phone: customer.phone,

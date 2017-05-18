@@ -29,6 +29,7 @@ angular.module('starter.services', [])
                 usersRef = $firebaseArray(uRef);
                 return usersRef;
             },
+
             getUser: function (userid) {
                 var thisUser = usersRef.$getRecord(userid);
                 return thisUser;
