@@ -358,7 +358,7 @@ angular.module('starter', ['ionic', 'starter.controllers', 'ionic-datepicker', '
     views: {
       'menuContent': {
         templateUrl: 'templates/actagen.html',
-        controller: ''
+        controller: 'taskCtrl'
       }
     }
   })
