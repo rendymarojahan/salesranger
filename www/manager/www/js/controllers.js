@@ -2801,7 +2801,7 @@ angular.module('starter.controllers', [])
     }
 })
 
-.controller("userCtrl", function($scope, MembersFactory, $state) {
+.controller("userCtrl", function($scope, $state, $rootScope, MembersFactory, $ionicLoading) {
   $scope.users = [];
   $scope.users = MembersFactory.getUsers();
   $scope.users.$loaded().then(function (x) {
@@ -2814,12 +2814,27 @@ angular.module('starter.controllers', [])
     $state.go('app.registration', { userId: item.$id });
   };
   $scope.delete = function(item){
-    var dRef = MembersFactory.getUser(item.$id);
-    dRef.remove();
+    if (typeof item.$id === 'undefined' || item.$id === '') {
+        $scope.hideValidationMessage = false;
+        $scope.validationMessage = "No Data"
+        return;
+    }
+
+    else{
+
+      $ionicLoading.show({
+          template: '<ion-spinner icon="ios"></ion-spinner><br>Deleting...'
+      });
+      var ref = MembersFactory.ref();
+      var dRef = ref.child(item.$id);
+      dRef.remove();
+     
+      $ionicLoading.hide();
+    }
   };
 
-    function refresh(users, $scope, MembersFactory) {
-    }
+  function refresh(users, $scope, MembersFactory) {
+  }
 })
 
 .controller('customerCtrl', function($scope, $state, $ionicLoading, CustomerFactory, $ionicPopup, myCache) {
@@ -2888,16 +2903,16 @@ angular.module('starter.controllers', [])
         });
 
         /* PREPARE DATA FOR FIREBASE*/
-      $scope.temp = {
-          name: customer.name,
-          address: customer.address,
-          email: customer.email,
-          phone: customer.phone,
-          gender: customer.gender,
-          addedby: CurrentUserService.fullname,
-          datecreated: Date.now(),
-          dateupdated: Date.now()
-      }
+        $scope.temp = {
+            name: customer.name,
+            address: customer.address,
+            email: customer.email,
+            phone: customer.phone,
+            gender: customer.gender,
+            addedby: CurrentUserService.fullname,
+            datecreated: Date.now(),
+            dateupdated: Date.now()
+        }
 
 
 
