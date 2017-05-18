@@ -10,10 +10,52 @@ angular.module('starter.services', [])
         });
 })
 
+.factory('CustomerFactory', function ($firebaseArray, $q, myCache, CurrentUserService, $timeout) {
+        var fb = firebase.database().ref();
+        var ref = {};
+        var pRef = {};
+        var customersRef = {};
+        var tasksRef = {};
+        var uRef = fb.child("customers");
+        return {
+            ref: function () {
+                ref = fb.child("customers");
+                return ref;
+            },
+            pRef: function () {
+                pRef = fb.child("tasks");
+                return pRef;
+            },
+
+            saveCustomer: function (temp) {
+                customersRef.$save(temp).then(function (ref) {
+                });
+            },
+            getCustomers: function () {
+                ref = fb.child("customers").orderByChild('isEnable');
+                customersRef = $firebaseArray(ref);
+                return customersRef;
+            },
+            getCustomer: function (userid) {
+                var thisUser = customersRef.$getRecord(userid);
+                return thisUser;
+            },
+            getTasks: function () {
+                ref = fb.child("tasks");
+                tasksRef = $firebaseArray(ref);
+                return tasksRef;
+            }
+            
+            
+        };
+})
+
 .factory('MembersFactory', function ($firebaseArray, $q, myCache, $timeout) {
         var fb = firebase.database().ref();
         var ref = fb.child("users");
         var mRef = {};
+        var aRef = {};
+        var agenRef = {};
         var uRef = {};
         var members = {};
         var usersRef = {};
@@ -23,11 +65,15 @@ angular.module('starter.services', [])
             ref: function () {
                 return ref;
             },
-
             getUsers: function () {
                 uRef = fb.child("users");
                 usersRef = $firebaseArray(uRef);
                 return usersRef;
+            },
+            getAgens: function () {
+                aRef = fb.child("users").orderByChild("level").equalTo("Agen");
+                agenRef = $firebaseArray(aRef);
+                return agenRef;
             },
             getUser: function (userid) {
                 var thisUser = usersRef.$getRecord(userid);
@@ -708,42 +754,7 @@ angular.module('starter.services', [])
         };
 })
 
-.factory('CustomerFactory', function ($firebaseArray, $q, myCache, CurrentUserService, $timeout) {
-        var fb = firebase.database().ref();
-        var ref = {};
-        var pRef = {};
-        var customersRef = {};
-        var tasksRef = {};
-        var uRef = fb.child("customers");
-        return {
-            ref: function () {
-                ref = fb.child("customers");
-                return ref;
-            },
-            pRef: function () {
-                pRef = fb.child("tasks");
-                return pRef;
-            },
 
-            saveCustomer: function (temp) {
-                customersRef.$save(temp).then(function (ref) {
-                    //ref.key() = posting.$id;
-                });
-            },
-            getCustomers: function () {
-                ref = fb.child("customers").orderByChild('isEnable');
-                customersRef = $firebaseArray(ref);
-                return customersRef;
-            },
-            getTasks: function () {
-                ref = fb.child("tasks");
-                tasksRef = $firebaseArray(ref);
-                return tasksRef;
-            }
-            
-            
-        };
-})
 
     
 ;

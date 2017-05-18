@@ -317,6 +317,15 @@ angular.module('starter', ['ionic', 'starter.controllers', 'ionic-datepicker', '
       }
     }
   })
+.state('app.assigncustomer', {
+    url: '/assigncustomer/:customerId',
+    views: {
+      'menuContent': {
+        templateUrl: 'templates/assigncustomer.html',
+        controller: 'assigncustomerCtrl'
+      }
+    }
+  })
 .state('app.atribut', {
     url: '/atribut',
     views: {
