@@ -50,7 +50,7 @@
                   <div class="form-group">
                   <label>Pilih Agen * :</label>
                     <div>
-                      <select class="select2_single form-control" tabindex="-1" ng-model="customer.assignto" ng-options="agen.fullname for agen in agens | orderBy:'fullname'" ng-change="chanfeat(item.feature)">
+                      <select class="select2_single form-control" tabindex="-1" ng-model="agenSel" ng-options="agen as agen.fullname for agen in agens | orderBy:'fullname'" ng-change="changedValue(agenSel)">
                       </select>
                     </div>
                   </div>

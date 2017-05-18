@@ -3040,6 +3040,10 @@ angular.module('starter.controllers', [])
       console.error("Error:", error);
   });
 
+  $scope.changedValue=function(item){
+    $scope.itemList.push(item.name);
+  } 
+
   $scope.createCustomer = function (customer) {
 
       // Validate form data
