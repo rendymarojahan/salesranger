@@ -6,7 +6,8 @@
           <div class="title_left">
             <h3>Data Pelanggan</h3>
             <a href="#/app/addcustomer/" class="btn btn-success"><i class="fa fa-plus-square m-right-xs"></i> Menambah Pelanggan</a>
-            <a href="#/app/uploadcustomer/" class="btn btn-success"><i class="fa fa-plus-square m-right-xs"></i> upload file</a>
+            <!--tombol upload file
+            <a href="#/app/uploadcustomer/" class="btn btn-success"><i class="fa fa-plus-square m-right-xs"></i> upload file</a>-->
             <br>
 
           </div>
@@ -29,13 +30,13 @@
 
                       <tbody>
                       <!--menampilkan data pelanggan-->
-                      <tr ng-repeat="user in users">
-                        <td>{{user.fullname}}</td> 
-                        <td>{{user.gender}}</td> 
-                        <td>{{user.address}}</td>
-                        <td>{{user.phone}</td>
-                        <td>{{user.agen}}</td> <!--agen dengan menggunakan drop down list-->   
-                        <td><button type="button" class="btn btn-primary btn-xs" ng-click="edit(user)">
+                      <tr ng-repeat="customer in customers">
+                        <td>{{customer.name}}</td> 
+                        <td>{{customer.gender}}</td> 
+                        <td>{{customer.email}}</td>
+                        <td>{{customer.telepon}}</td>
+                        <td>{{customer.agen}}</td> <!--agen dengan menggunakan drop down list-->   
+                        <td><button type="button" class="btn btn-primary btn-xs" ng-click="customer(user)">
                               <i class="fa fa-gears"> </i> Edit Data
                             </button></td>
                         <td><button type="button" class="btn btn-primary btn-xs" ng-click="edit(user)">

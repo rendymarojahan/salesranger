@@ -2880,7 +2880,7 @@ angular.module('starter.controllers', [])
 
         /* PREPARE DATA FOR FIREBASE*/
       $scope.temp = {
-          name: customer.name,
+          name: customer.fullname,
           address: customer.address,
           email: customer.email,
           phone: customer.phone,
