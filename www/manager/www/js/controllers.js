@@ -139,7 +139,61 @@ angular.module('starter.controllers', [])
   }
 })
 
-.controller('dashboardCtrl', function($scope, CurrentUserService, myCache, TransactionFactory, ContactsFactory, AccountsFactory, MasterFactory) {
+.controller('dashboardCtrl', function($scope, CurrentUserService, myCache, TransactionFactory, ContactsFactory, AccountsFactory, MasterFactory, $compile) {
+  function initialize() {
+    var myLatlng = new google.maps.LatLng(43.07493,-89.381388);
+    
+    var mapOptions = {
+      center: myLatlng,
+      zoom: 16,
+      mapTypeId: google.maps.MapTypeId.ROADMAP
+    };
+    var map = new google.maps.Map(document.getElementById("map"),
+        mapOptions);
+    
+    //Marker + infowindow + angularjs compiled ng-click
+    var contentString = "<div><a ng-click='clickTest()'>Click me!</a></div>";
+    var compiled = $compile(contentString)($scope);
+
+    var infowindow = new google.maps.InfoWindow({
+      content: compiled[0]
+    });
+
+    var marker = new google.maps.Marker({
+      position: myLatlng,
+      map: map,
+      title: 'Uluru (Ayers Rock)'
+    });
+
+    google.maps.event.addListener(marker, 'click', function() {
+      infowindow.open(map,marker);
+    });
+
+    $scope.map = map;
+  }
+  google.maps.event.addDomListener(window, 'load', initialize);
+  
+  $scope.centerOnMe = function() {
+    if(!$scope.map) {
+      return;
+    }
+
+    $scope.loading = $ionicLoading.show({
+      content: 'Getting current location...',
+      showBackdrop: false
+    });
+
+    navigator.geolocation.getCurrentPosition(function(pos) {
+      $scope.map.setCenter(new google.maps.LatLng(pos.coords.latitude, pos.coords.longitude));
+      $scope.loading.hide();
+    }, function(error) {
+      alert('Unable to get location: ' + error.message);
+    });
+  };
+  
+  $scope.clickTest = function() {
+    alert('Example of infowindow with ng-click')
+  };
   $scope.fullname = CurrentUserService.fullname;
   $scope.photo = CurrentUserService.picture;
   $scope.level = CurrentUserService.level;
@@ -254,6 +308,11 @@ angular.module('starter.controllers', [])
     refresh($scope.blogs, $scope.emails, $scope.overviews, $scope.users, $scope);
   });
 
+      
+      
+
+
+
   function refresh(blogs, emails, overviews, users, $scope, item) {
     
   }
@@ -297,14 +356,14 @@ angular.module('starter.controllers', [])
     $scope.agen = "";
     $scope.headsales = "";
     $scope.manager = "";
-    $scope.level = "admin";
+    $scope.level = "Admin";
   };
   $scope.trigagen = function() {
     $scope.admin = "";
     $scope.agen = "checked";
     $scope.headsales = "";
     $scope.manager = "";
-    $scope.level = "agen";
+    $scope.level = "Agen";
   };
   $scope.trigheadsales = function() {
     $scope.admin = "";
@@ -504,7 +563,7 @@ angular.module('starter.controllers', [])
           });
 
           $ionicLoading.hide();
-          $state.go('app.dashboard');
+          $ionicHistory.goBack();
         });
       });
     }
@@ -2861,77 +2920,165 @@ angular.module('starter.controllers', [])
     $state.go('app.deletecustomer', { customerId: item.$id });
   };
 
+  $scope.assigncustomer = function(item) {
+    $state.go('app.assigncustomer', { customerId: item.$id });
+  };
+
   function refresh(informations, $scope, item) {
   }
 })
 
-.controller('addcustomerCtrl', function($scope, $ionicLoading, CustomerFactory, CurrentUserService, $ionicPopup, myCache, $ionicHistory) {
+.controller('addcustomerCtrl', function($scope, $ionicLoading, CustomerFactory, $stateParams, CurrentUserService, $ionicPopup, myCache, $ionicHistory) {
 
   $scope.customer = {'name': '','address': '' ,'email': '' ,'phone': '' ,'gender': ''};
   // Gender
-    $scope.male = "";
-    $scope.female = "";
-    $scope.trigmale = function() {
+  $scope.male = "";
+  $scope.female = "";
+  $scope.trigmale = function() {
     $scope.male = "checked";
     $scope.female = "";
-    $scope.gender = "male";
-    };
+    $scope.gender = "Pria";
+  };
   $scope.trigfemale = function() {
     $scope.male = "";
     $scope.female = "checked";
-    $scope.gender = "female";
-    };
+    $scope.gender = "Wanita";
+  };
+  if ($stateParams.customerId === '') {
+  } else {
+      var getcust = CustomerFactory.getCustomer($stateParams.customerId);
+      $scope.inEditMode = true;
+      $scope.customer = getcust;
+      if ($scope.customer.gender !== "") {
+        if ($scope.customer.gender == "male") {
+          $scope.trigmale;
+        } else {
+          $scope.trigfemale;
+        }
+      }
+  }
 
   $scope.createCustomer = function (customer) {
 
       // Validate form data
-      if (typeof customer.name === 'undefined' || customer.name === '') {
+      if (typeof customer.firstName === 'undefined' || customer.firstName === '') {
           $scope.hideValidationMessage = false;
           $scope.validationMessage = "Please enter name"
           return;
       }
-      if (typeof customer.phone === 'undefined' || customer.phone === '') {
+      if (typeof customer.telephone === 'undefined' || customer.telephone === '') {
           $scope.hideValidationMessage = false;
           $scope.validationMessage = "Please enter phone number"
           return;
       }
-
-      else{
-
+      if ($scope.inEditMode) {
+        $ionicLoading.show({
+            template: '<ion-spinner icon="ios"></ion-spinner><br>Editing...'
+        });
+        /* PREPARE DATA FOR FIREBASE*/
+        $scope.temp = {
+            firstName: customer.firstName,
+            alamat: customer.alamat,
+            email: customer.email,
+            telephone: customer.telephone,
+            gender: $scope.gender,
+            addedby: myCache.get('thisMemberId'),
+            dateupdated: Date.now(),
+            isEnable: false
+        }
+        /* SAVE PRODUCT DATA */
+        var newCustomer = CustomerFactory.ref();
+        var newData = newCustomer.child($stateParams.customerId);
+        newData.update($scope.temp, function (ref) {
+        });
+        $ionicHistory.goBack();
+      }
+      else {
         $ionicLoading.show({
             template: '<ion-spinner icon="ios"></ion-spinner><br>Adding...'
         });
-
         /* PREPARE DATA FOR FIREBASE*/
         $scope.temp = {
-            name: customer.name,
-            address: customer.address,
+            firstName: customer.firstName,
+            alamat: customer.alamat,
             email: customer.email,
-            phone: customer.phone,
-            gender: customer.gender,
-            addedby: CurrentUserService.fullname,
-            datecreated: Date.now(),
-            dateupdated: Date.now()
+            telephone: customer.telephone,
+            gender: $scope.gender,
+            addedby: myCache.get('thisMemberId'),
+            dateupdated: Date.now(),
+            isEnable: false
         }
-
-
-
         /* SAVE PRODUCT DATA */
         var newCustomer = CustomerFactory.ref();
         newCustomer.push($scope.temp);
-        CustomerFactory.saveCustomer($scope.temp, function (ref) {
-        });
-       
+        $ionicHistory.goBack();
+      }
       $ionicLoading.hide();
       $ionicHistory.goBack();
       
       refresh($scope.customer, $scope);
-      }   
   };
 
   function refresh(customer, $scope, temp) {
 
     $scope.customer = {'name': '','address': '' ,'email': '' ,'phone': '' ,'gender': ''};
+  }
+})
+
+.controller('assigncustomerCtrl', function($scope, $ionicLoading, CustomerFactory, $stateParams, CurrentUserService, MembersFactory, $ionicPopup, myCache, $ionicHistory) {
+
+  var getcust = CustomerFactory.getCustomer($stateParams.customerId);
+  $scope.inEditMode = true;
+  $scope.customer = getcust;
+  if ($scope.customer.assignto !== "" || $scope.customer.assignto !== undefined) {
+    $scope.tampil = false;
+  }
+  $scope.agens = MembersFactory.getAgens();
+  $scope.agens.$loaded().then(function (x) {
+    refresh($scope.agens, $scope, MembersFactory);
+  }).catch(function (error) {
+      console.error("Error:", error);
+  });
+
+  $scope.changedValue=function(item){
+    $scope.itemList.push(item.name);
+  } 
+
+  $scope.createCustomer = function (customer) {
+
+      // Validate form data
+      if (typeof customer.firstName === 'undefined' || customer.firstName === '') {
+          $scope.hideValidationMessage = false;
+          $scope.validationMessage = "Please enter name"
+          return;
+      }
+      if (typeof customer.telephone === 'undefined' || customer.telephone === '') {
+          $scope.hideValidationMessage = false;
+          $scope.validationMessage = "Please enter phone number"
+          return;
+      }
+      $ionicLoading.show({
+          template: '<ion-spinner icon="ios"></ion-spinner><br>Assigning...'
+      });
+      /* PREPARE DATA FOR FIREBASE*/
+      $scope.temp = {
+          assignto: customer.assignto,
+          addedby: myCache.get('thisMemberId'),
+          dateupdated: Date.now(),
+          isEnable: false
+      }
+      /* SAVE PRODUCT DATA */
+      var newCustomer = CustomerFactory.ref();
+      var newData = newCustomer.child($stateParams.customerId);
+      newData.update($scope.temp, function (ref) {
+      });
+      $ionicLoading.hide();
+      $ionicHistory.goBack();
+      
+      refresh($scope.customer, $scope);
+  };
+
+  function refresh(agen, $scope, temp) {
   }
 })
 

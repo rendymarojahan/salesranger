@@ -701,3 +701,15 @@ span.right {
 .img-user {
     height: 33px;
 }
+.map {
+    position: relative;
+}
+.map iframe {
+    width: 100%;
+    min-height: 969px;
+    border: none;
+}
+iframe {
+    display: block;
+    max-width: 100%;
+}
