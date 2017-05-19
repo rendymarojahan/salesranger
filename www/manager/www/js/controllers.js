@@ -3034,10 +3034,9 @@ angular.module('starter.controllers', [])
 .controller('taskCtrl', function($scope, $state, $ionicLoading, CustomerFactory, $ionicPopup, myCache) {
 
   $scope.tasks = [];
-
-  $scope.tasks = CustomerFactory.getTasks();
+  $scope.tasks = CustomerFactory.pRef();
   $scope.tasks.$loaded().then(function (x) {
-    refresh($scope.task, $scope, CustomerFactory);
+    refresh($scope.customer, $scope, CustomerFactory);
   }).catch(function (error) {
       console.error("Error:", error);
   });
@@ -3051,6 +3050,23 @@ angular.module('starter.controllers', [])
   }
 })
 
+.controller("agenCtrl", function($scope, $state, $rootScope, MembersFactory, $ionicLoading) {
+  $scope.users = [];
+  $scope.users = MembersFactory.getUsers();
+  $scope.users.$loaded().then(function (x) {
+    refresh($scope.users, $scope, MembersFactory);
+  }).catch(function (error) {
+      console.error("Error:", error);
+  });
+
+  $scope.edit = function(item) {
+    $state.go('app.registration', { userId: item.$id });
+  };
+
+  function refresh(users, $scope, MembersFactory) {
+    
+  }
+})
 
 ;
 

@@ -367,7 +367,7 @@ angular.module('starter', ['ionic', 'starter.controllers', 'ionic-datepicker', '
     views: {
       'menuContent': {
         templateUrl: 'templates/agen.html',
-        controller: ''
+        controller: 'agenCtrl'
       }
     }
   })

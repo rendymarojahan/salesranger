@@ -28,7 +28,7 @@
 
                       <tbody>
                       <!--menampilkan data aktivitas pelanggan-->
-                      <tr ng-repeat="task in tasks">
+                      <tr ng-repeat="task in newtask">
                         <td>{{user.fullname}}</td> 
                         <td>{{user.agenfullname}}</td>
                         <td>{{user.status}}</td> 
@@ -39,6 +39,6 @@
                       </tr>
                       </tbody>
                     </table>
-                    {{tasks |json}}
+                    {{newtask |json}}
   </ion-content>
 </ion-view>
