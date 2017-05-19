@@ -24,17 +24,24 @@
                       </thead>
 
 
+                      
                       <tbody>
-                      <!--menampilkan data pelanggan-->
                       <tr ng-repeat="user in users">
-                        <td>{{user.fullname}}</td> 
-                        <td>{{user.gender}}</td> 
-                        <td>{{user.address}}</td>
-                        <td>{{user.phone}</td>
-                        <td>{{user.jabatan}}</td>
-                        <td>{{user.atasan}}</td>
+                        <td>{{user.fullname}}</td>
+                        <td>{{user.email}}</td>
+                        <td>{{user.gender}}</td>
+                        <td><img src="{{user.picture}}" alt="" class="img-user"></td>
+                        <td>{{user.level}}</td>
+                        <td><button type="button" class="btn btn-primary btn-xs" ng-click="edit(user)">
+                              <i class="fa fa-gears"> </i> Edit User
+                            </button></td>
+                        <td><button type="button" class="btn btn-primary btn-xs" ng-click="delete(user)">
+                              <i class="fa fa-gears"> </i> Delete User
+                            </button></td>
                       </tr>
                       </tbody>
                     </table>
+                    {{users | json}}
+
   </ion-content>
 </ion-view>

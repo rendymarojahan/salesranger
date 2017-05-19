@@ -11,6 +11,9 @@
         </div>
         <div class="clearfix"></div>
         <br>
+
+
+
         <table id="datatable" class="table table-striped table-bordered">
                       <thead>
                         <tr>
@@ -25,7 +28,7 @@
 
                       <tbody>
                       <!--menampilkan data aktivitas pelanggan-->
-                      <tr ng-repeat="user in users">
+                      <tr ng-repeat="task in newtask">
                         <td>{{user.fullname}}</td> 
                         <td>{{user.agenfullname}}</td>
                         <td>{{user.status}}</td> 
@@ -36,5 +39,6 @@
                       </tr>
                       </tbody>
                     </table>
+                    {{newtask |json}}
   </ion-content>
 </ion-view>
